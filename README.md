@@ -1,3 +1,13 @@
+# Fork info
+
+This fork fixes a bug (creating a full path is useless and causes issues wiuth attempting to mount the source volume) and improves support for parameterisation of builds, should handle slightly different paths under /src more sensibly, and will exit nonzero on a build failure.
+
+Also on docker hub: https://hub.docker.com/r/siterelenby/anduril-builder
+
+`docker pull siterelenby/anduril-builder:latest`
+
+Note that my docker hub builds are multiarch but I have only personally tested on amd64, I can't think of any specific reason it wouldn't work on ARM though.
+
 # Anduril build environment
 
 This image can be used to build Anduril, a firmware for flashlights.
