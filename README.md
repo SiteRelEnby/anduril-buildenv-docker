@@ -1,12 +1,19 @@
 # Fork info
 
-This fork fixes a bug (creating a full path is useless and causes issues wiuth attempting to mount the source volume) and improves support for parameterisation of builds, should handle slightly different paths under /src more sensibly, and will exit nonzero on a build failure.
+A fork of [anduril-buildenv-docker](https://github.com/SiteRelEnby/anduril-buildenv-docker)
+
+* Fix bug (full path creation causes issues one some of my boxen when trying to mount a filesystem with subdirs, and is in general useless)
+* Added a proper entrypoint script
+  * Checks for the source directory being mounted at different paths under `/src`
+  * Return non-zero on build failure
 
 Also on docker hub: https://hub.docker.com/r/siterelenby/anduril-builder
 
 `docker pull siterelenby/anduril-builder:latest`
 
 Note that my docker hub builds are multiarch but I have only personally tested on amd64, I can't think of any specific reason it wouldn't work on ARM though.
+
+Original README:
 
 # Anduril build environment
 
