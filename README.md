@@ -7,11 +7,13 @@ A fork of [anduril-buildenv-docker](https://github.com/SiteRelEnby/anduril-build
   * Checks for the source directory being mounted at different paths under `/src`
   * Return non-zero on build failure
 
-Also on docker hub: https://hub.docker.com/r/siterelenby/anduril-builder
+## Using the builder
 
-`docker pull siterelenby/anduril-builder:latest`
+A prebuilt image is available on docker hub: https://hub.docker.com/r/siterelenby/anduril-builder, or see the original README below to build a local-only version.
 
-Note that my docker hub builds are multiarch but I have only personally tested on amd64, I can't think of any specific reason it wouldn't work on ARM though.
+`docker pull siterelenby/anduril-builder:latest`. Built for amd64, armv7 and arm64 - open an issue if you need another arch and I can add it (assuming it is supported by alpine and [avr-gcc](https://www.nongnu.org/avr-libc/user-manual/overview.html)).
+
+
 
 Original README:
 
