@@ -4,26 +4,18 @@ set -e
 set -o pipefail
 [[ ! -d /src ]] && exit 2
 
-if [[ -f /src/spaghetti-monster/anduril/build-all.sh ]]
+if [[ -f /src/spaghetti-monster/anduril/build-all.sh ]] #using a version where source is in the root as opposed to under ToyKeeper/
 then
 	cd /src/spaghetti-monster/anduril
 	exec ./build-all.sh ${*}
 else
-	for dirpath in anduril anduril2 ToyKeeper/anduril
+	for dirpath in spaghetti-monster/anduril2 ToyKeeper/spaghetti-monster/anduril #catch renamed anduril dir as well as default dir structure
 	do
 		if [[ -d "/src/${dirpath}" ]]
 		then
-		cd ${dirpath}
-			if [[ -f "spaghetti-monster/anduril/build-all.sh" ]]
+		cd /src/${dirpath}
+			if [[ -f "build-all.sh" ]]
 			then
-				cd spaghetti-monster/anduril
-				exec ./build-all.sh ${*}
-
-			# put this case here to catch any restructured source. May be unnecessary but catches an edge case.
-			# if the user mounts this dir into /src from the default layout it will fail though as fsm in ../ won't get pulled in.
-			elif [[ -f "anduril/build-all.sh" ]]
-			then
-				cd anduril
 				exec ./build-all.sh ${*}
 			fi
 		else
