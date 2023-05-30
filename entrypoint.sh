@@ -18,18 +18,19 @@ else
 			then
 
 				# build-all.sh references `../../../bin/build.sh` which works while the anduril code is under ToyKeeper/ as in
-                                # the main upstream repo while build.sh is under bin/, but some forks and repos have the contents of that dir
-                                # (bin/, hwdefs, and the FSM dir) in the repo root instead to be cleaner, so check for that case of an incorrect
-                                # reference in the script, but also don't do anything automatically just in case:
+				# the main upstream repo while build.sh is under bin/, but some forks and repos have the contents of that dir
+				# (bin/, hwdefs, and the FSM dir) in the repo root instead to be cleaner, so check for that case of an incorrect
+				# reference in the script, but also don't do anything automatically just in case:
 				DIR=$${PWD##*/} #dirname only
 				if [[ "${dir}" != "ToyKeeper" ]]
 				then
 					#dir structure moved to root
-					if [[ grep '\.\.\/\.\.\/\.\.\/bin\/build.sh' build-all.sh >/dev/null ]]
+					if (grep '\.\.\/\.\.\/\.\.\/bin\/build.sh' build-all.sh >/dev/null)
 					then
 						#sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' build-all.sh
 						echo "build-all.sh contains '../../../bin/build.sh but root dir is not ToyKeeper; this might imply the script may need '../../build.sh instead for the dir change" >&2
-						echo "If the build script doesn't work as a result, try fixing  sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' build-all.sh" >&2
+						echo "If the build script doesn't work as a result, try: sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' spaghetti-monster/anduril/build-all.sh" >&2
+					fi
 
 				fi
 				exec ./build-all.sh ${*}
