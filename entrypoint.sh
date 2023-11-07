@@ -5,6 +5,7 @@ set -o pipefail
 [[ ! -d /src ]] && exit 2
 
 usage(){
+# shellcheck disable=SC2016
 	echo 'Usage:
 #    Windows CMD: docker run --rm --pull=always -v "%cd%":/src -it siterelenby/anduril-builder:latest <BUILD ARGS>
 #    Linux/WSL/MacOS: docker run --rm --pull=always -v "$(pwd -P)":/src -it siterelenby/anduril-builder:latest <BUILD ARGS>
@@ -24,11 +25,11 @@ check_buildall(){
 	# the main upstream repo while build.sh is under bin/, but some forks and repos have the contents of that dir
 	# (bin/, hwdefs, and the FSM dir) in the repo root instead to be cleaner, so check for that case of an incorrect
 	# reference in the script, but also don't do anything automatically just in case:
-	if (grep '\.\.\/\.\.\/\.\.\/bin\/build.sh' ${1} >/dev/null) && ! [[ "$(pwd -P)" =~ "^/src/ToyKeeper/" ]]
+	if (grep '\.\.\/\.\.\/\.\.\/bin\/build.sh' "${1}" >/dev/null) && ! [[ "$(pwd -P)" =~ "^/src/ToyKeeper/" ]]
 	then
 		#sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' build-all.sh
 		echo -e '\nbuild-all.sh contains "../../../bin/build.sh" but the source dir does not have "ToyKeeper/" in the root; this might imply the script may need "../../build.sh" instead for the dir change'
-		echo -e "If the build script doesn't work as a result, try: sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' ${dirpath}/build-all.sh\n\n\n" >&2
+		echo -e "If the build script doesn't work as a result, try: sed -i 's|\.\./\.\./\.\./bin/build.sh|../../bin/build.sh|' ${1}/build-all.sh\n\n\n" >&2
 		#TODO: is there anything at all like sed that works for windows out of the box that's not peering into the eldritch abomination that is PowerShell?
 	fi
 }
@@ -85,18 +86,19 @@ then
 		./make dfp || exit 4
 	fi
 
-	exec ./make ${*}
+	exec ./make "${@}"
 elif [[ -d /src/ToyKeeper ]]
 then
 	# TK's original flashlight-firmware repo, or an unrestructured fork
-	cd ToyKeeper/spaghetti-monster/anduril && exec build-all.sh ${*}
+	cd ToyKeeper/spaghetti-monster/anduril && exec ./build-all.sh "${@}"
 elif [[ -d /src/spaghetti-monster ]]
 then
 	# Original repo, restructured with code migrated down one level (e.g. some older GitHub-based forks)
 	check_buildall spaghetti-monster/anduril/build-all.sh
-        cd spaghetti-monster/anduril && exec build-all.sh ${*}
+        cd spaghetti-monster/anduril && exec ./build-all.sh "${@}"
 else
 	# Unknown repo configuration
+        # shellcheck disable=SC2016
 	echo 'Nothing in /src looks like a known anduril source directory format. If unsure what happened, run the container again with "--debug" or "-e DEBUG=1". You can also run the container with an arg of "--shell" (e.g. "docker run --rm --pull=always -v "$(pwd -P)":/src -it siterelenby/anduril-builder:latest --shell") to get an interactive shell for troubleshooting.' >&2
 	usage
 	[[ "${DEBUG}" == "1" ]] && find /src >&2
